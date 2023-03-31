@@ -1,0 +1,94 @@
+#eureka:
+#  instance:
+#    hostname: localhost 
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    service-url:
+#      defaultZone : http://localhost:8761/eureka
+spring:
+  application:
+    name: USER-SERVICE
+  config:
+    import: configserver:http://localhost:9092
+    
+  security:
+   oauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: https://dev-97326427.okta.com/oauth2/default
+  
+    client:
+      registration:
+         my-internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oa8whp71bCZWgFAN5d7
+            client-secret: IriokcZtrW9ORdrU0bdilDOXjZ4yVLTWQ7Sr0mSA
+          
+      provider:
+        okta: 
+          issuer-uri: https://dev-97326427.okta.com/oauth2/default
+
+    
+#  profiles:
+#    active:
+#    - prod
+   
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+  endpoint:
+    health:
+      show-details: always
+
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingHotelBreaker:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 6s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+ 
+
+      
+  retry:
+    instances:
+       ratingHotelService:
+         max-attempts: 3
+         wait-duration: 5s
+         
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limit-refresh-period: 4s
+        limit-for-period: 2
+        timeout-duration: 0s
+        
+        
+#Okta configuration for api gateway
+okta:
+  oauth2:
+    issuer: https://dev-97326427.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oa8whp71bCZWgFAN5d7
+    client-secret: IriokcZtrW9ORdrU0bdilDOXjZ4yVLTWQ7Sr0mSA
+    scopes: openid,profile,email,offline_access
+      

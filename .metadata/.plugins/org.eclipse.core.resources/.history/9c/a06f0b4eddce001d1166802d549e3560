@@ -1,0 +1,5 @@
+package com.user.config.interceptor;
+
+public class FeinClientInterceptor {
+
+}

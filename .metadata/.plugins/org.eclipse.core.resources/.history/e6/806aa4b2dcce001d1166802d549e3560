@@ -1,0 +1,5 @@
+package com.gateway.interceptor;
+
+public class FeinClientInterceptor implements requestI{
+
+}

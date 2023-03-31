@@ -1,0 +1,21 @@
+package com.user.entities;
+
+public class corbonx {
+	private String Node2Node3Mode;
+	private String SubActivity;
+	private String Node2Name;
+	private String Node3Name;
+
+	private String SourceName;
+	private String SourceAddress;
+	private String SourceCountry;
+	private String SourceCity;
+	private String SourceZipcode;
+
+	private String DestinationName;
+	private String DestinationAddress;
+	private String DestinationCountry;
+	private String DestinationCity;
+	private String DestinationZipcode;
+
+}
