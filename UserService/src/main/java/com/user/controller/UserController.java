@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.user.dto.UserRatingHotel;
 import com.user.entities.User;
 import com.user.service.UserService;
 import com.user.service.UserServiceImpl;
@@ -36,20 +37,27 @@ public class UserController {
 		return ResponseEntity.ok(allUsers);
 	}
 
+	// get all user rating hotels
+	@GetMapping("/user-rating-hotel/{userId}")
+	public List<UserRatingHotel> getUserRatingHotel(@PathVariable String userId) {
+		return userService.getUserRatingHotel(userId);
+	}
+
 	// Get the single user
 	@GetMapping("/user/{id}")
 //	@CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallBack")
 //	@Retry(name = "ratingHotelService", fallbackMethod = "ratingHotelFallBack")
-	@RateLimiter(name = "userRateLimiter",fallbackMethod = "ratingHotelFallBack")
+	@RateLimiter(name = "userRateLimiter", fallbackMethod = "ratingHotelFallBack")
 	public ResponseEntity<User> getUser(@PathVariable("id") String id) {
 		User user = userService.getUser(id);
 		return ResponseEntity.ok(user);
 	}
 
-	int retryCount=1;
+	int retryCount = 1;
+
 	// Creating fallback method for circuit breaker
 	public ResponseEntity<User> ratingHotelFallBack(String userId, Exception ex) {
-		logger.info("retry count: {}",retryCount);
+		logger.info("retry count: {}", retryCount);
 		retryCount++;
 //		logger.info("Fallback is executed because service is down", ex.getMessage());
 		User user = User.builder().email("example@gmail.com").name("Test")
